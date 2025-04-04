@@ -11,5 +11,9 @@ app.use(cors({
   credentials: true,
 }));
 
+import { userRouter } from './routes/user.routes.js';
+import { messageRouter } from './routes/message.routes.js';
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/message', messageRouter);
 
 export {app}
