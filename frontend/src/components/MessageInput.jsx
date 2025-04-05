@@ -22,28 +22,20 @@ const MessageInput = () => {
     reader.readAsDataURL(file);
   };
 
-  const removeImage = () => {
-    setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
-
-    try {
-      await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-      });
-
-      // Clear form
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (error) {
-      console.error("Failed to send message:", error);
+    if (!text.trim() && !fileInputRef.current.files[0]) return;
+  
+    const formData = new FormData();
+    formData.append("text", text);
+    if (fileInputRef.current.files[0]) {
+      formData.append("images", fileInputRef.current.files[0]); // must match backend key
     }
+  
+    await sendMessage(formData);
+    setText("");
+    setImagePreview(null);
+    fileInputRef.current.value = "";
   };
 
   return (

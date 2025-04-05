@@ -1,66 +1,83 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { useChatStore } from '../store/useChatStore'
-import ChatHeader from './ChatHeader'
-import MessageInput from './MessageInput'
-import { formatMessageTime } from '../lib/utils.js'
-import { useAuthStore } from '../store/useAuthStore'
+import { useChatStore } from "../store/useChatStore";
+import { useEffect, useRef } from "react";
 
-function ChatContainer() {
-  const {getMessages,messages,isMessagesLoading,selectedUserChat} = useChatStore()
-  const {authUser} = useAuthStore()
+import ChatHeader from "./ChatHeader";
+import MessageInput from "./MessageInput";
+import { useAuthStore } from "../store/useAuthStore";
+import { formatMessageTime } from "../lib/utils";
 
-  useEffect(()=>{
-    getMessages(selectedUserChat._id)
-  },[selectedUserChat._id,getMessages])
+const ChatContainer = () => {
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUserChat,
+    // subscribeToMessages,
+    // unsubscribeFromMessages,
+  } = useChatStore();
+  const { authUser } = useAuthStore();
+  const messageEndRef = useRef(null);
 
-  if(isMessagesLoading) return <div className='h-full w-full flex items-center justify-center'>Loading...</div>
+  useEffect(() => {
+    getMessages(selectedUserChat._id);
+  }, [selectedUserChat._id, getMessages]);
+
+  useEffect(() => {
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  if (isMessagesLoading) {
+    return (
+      <div>Loading...</div>
+    )
+  }
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message._id}
-              className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-              
-            >
-              {/* <div className=" chat-image avatar">
-                <div className="size-10 rounded-full border">
-                  <img
-                    src={
-                      message.senderId === authUser._id
-                        ? authUser.avatar || "/avatar.png"
-                        : selectedUserChat.avatar || "/avatar.png"
-                    }
-                    alt="profile pic"
-                  />
-                </div>
-              </div> */}
-              <div className="chat-header mb-1">
-                <time className="text-xs opacity-50 ml-1">
-                  {formatMessageTime(message.createdAt)}
-                </time>
-              </div>
-              <div className="chat-bubble flex flex-col">
-                {message.image && (
-                  <img
-                    src={message.image}
-                    alt="Attachment"
-                    className="sm:max-w-[200px] rounded-md mb-2"
-                  />
-                )}
-                {message.text && <p>{message.text}</p>}
+        {messages.map((message) => (
+          <div
+            key={message._id}
+            className={`chat ${message.sender === authUser.data._id ? "chat-end" : "chat-start"}`}
+            ref={messageEndRef}
+          >
+            <div className=" chat-image avatar">
+              <div className="size-10 rounded-full border">
+                <img
+                  src={
+                    message.sender === authUser.data._id
+                      ? authUser.avatar || "/avatar.png"
+                      : selectedUserChat.avatar || "/avatar.png"
+                  }
+                  alt="profile pic"
+                />
               </div>
             </div>
-          ))}
+            <div className="chat-header mb-1">
+              <time className="text-xs opacity-50 ml-1">
+                {formatMessageTime(message.createdAt)}
+              </time>
+            </div>
+            <div className="chat-bubble flex flex-col">
+              {message.image && (
+                <img
+                  src={message.image}
+                  alt="Attachment"
+                  className="sm:max-w-[200px] rounded-md mb-2"
+                />
+              )}
+              {message.text && <p>{message.text}</p>}
+            </div>
+          </div>
+        ))}
       </div>
 
       <MessageInput />
     </div>
   );
-}
-
-export default ChatContainer
+};
+export default ChatContainer;
