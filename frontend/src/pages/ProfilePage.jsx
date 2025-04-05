@@ -18,20 +18,20 @@ const ProfilePage = () => {
     });
   }, [authUser]);
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // const handleImageUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
 
-    const reader = new FileReader();
+  //   const reader = new FileReader();
 
-    reader.readAsDataURL(file);
+  //   reader.readAsDataURL(file);
 
-    reader.onload = async () => {
-      const base64Image = reader.result;
-      setSelectedImg(base64Image);
-      await updateProfile({ profilePic: base64Image });
-    };
-  };
+  //   reader.onload = async () => {
+  //     const base64Image = reader.result;
+  //     setSelectedImg(base64Image);
+  //     await updateProfile({avatar: base64Image });
+  //   };
+  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,14 +71,14 @@ const ProfilePage = () => {
                 `}
               >
                 <Camera className="w-5 h-5 text-base-200" />
-                <input
+                {/* <input
                   type="file"
                   id="avatar-upload"
                   className="hidden"
                   accept="image/*"
                   onChange={handleImageUpload}
                   disabled={isUpdatingProfile}
-                />
+                /> */}
               </label>
             </div>
             <p className="text-sm text-zinc-400">

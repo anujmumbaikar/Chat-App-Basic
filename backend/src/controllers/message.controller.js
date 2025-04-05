@@ -23,15 +23,21 @@ const getMessages = asyncHandler(async (req, res) => {
 
 })
 const sendMessage = asyncHandler(async (req, res) => {
-    const {text} = req.body;
+    const {text,image} = req.body;
     const {userId} = req.params;
     const loggedInUserId = req.user._id;
-    const image = req.files[0].path;
     const sendContent = {};
-    if(image){
-        const imageUrl = await uploadOnCloudinary(image);
-        sendContent.image = imageUrl;
-    }
+    if (req.files && req.files.images && req.files.images.length > 0) {
+        const uploadedImages = [];
+        for (const file of req.files.images) {
+            const imageUrl = await uploadOnCloudinary(file.path);
+            if (!imageUrl) {
+                throw new ApiError(400, 'One or more images failed to upload');
+            }
+            uploadedImages.push(imageUrl.url);
+        }
+        sendContent.images = uploadedImages;
+    }    
     if(text){
         sendContent.text = text;
     }
