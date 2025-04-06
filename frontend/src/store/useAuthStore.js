@@ -3,15 +3,17 @@ import { axiosInstance } from '../lib/axios.js';
 import SignUpPage from '../pages/SignUpPage.jsx';
 import toast from 'react-hot-toast';
 
-export const useAuthStore = create((set)=>({
+
+export const useAuthStore = create((set,get)=>({
     authUser:null,
     isCheckingAuth:true,
     isSigningIn:false,
     isLoggingIn:false,
     isUpdatingProfile:false,
-    onlineUsers:[], 
+    onlineUsers:[],
 
 
+    
     checkAuth: async ()=>{
         try {
             const res = await axiosInstance.get("/user/profile")
