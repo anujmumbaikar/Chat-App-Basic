@@ -4,7 +4,7 @@ import {User} from '../models/user.model.js'
 import { Message } from '../models/message.model.js'
 import {uploadOnCloudinary} from '../utils/Cloudinary.js'
 import {asyncHandler} from '../utils/asyncHandler.js'
-import { getRecieverSocketId } from '../app.js'
+import { getRecieverSocketId ,io} from '../app.js'
 
 const getUsersForSidebar = asyncHandler(async (req, res) => {
     const loggedInUserId = req.user._id;
@@ -50,7 +50,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
     const recieverSocketId = getRecieverSocketId(userId);
     if(recieverSocketId){
-        io.to(recieverSocketId).emit("newMessage",message)
+        io.to(recieverSocketId).emit("message",message)
     }
 
     

@@ -2,6 +2,7 @@ import {create} from 'zustand';
 import toast from 'react-hot-toast';
 import {axiosInstance} from '../lib/axios.js'
 import {useAuthStore} from './useAuthStore.js'
+
 export const useChatStore = create((set,get)=>({
     messages:[],
     users:[],
@@ -45,7 +46,7 @@ export const useChatStore = create((set,get)=>({
         const {selectedUserChat} = get();
         if(!selectedUserChat) return;
         const socket = useAuthStore.getState().socket;
-
+        socket.off("message"); // clean up first
         //optimize later
         socket.on('message',(newMessages)=>{
             set({
