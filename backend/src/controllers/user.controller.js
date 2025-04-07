@@ -128,4 +128,11 @@ const getUserProfileData = asyncHandler(async(req,res)=>{
     }
     return res.status(200).json(new ApiResponse(200,user,"User profile data"))
 })
-export {registerUser,loginUser,logoutUser,updateUserProfile,getUserProfileData}
+const checkAuth = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user)
+    if (!user) {
+        throw new ApiError(400, "User not found");
+    }
+    return res.status(200).json(new ApiResponse(200, user, "User profile data"));
+})
+export {registerUser,loginUser,logoutUser,updateUserProfile,getUserProfileData,checkAuth}
