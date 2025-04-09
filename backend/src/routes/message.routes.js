@@ -6,7 +6,7 @@ import { getUsersForSidebar,getMessages,sendMessage } from '../controllers/messa
 const router = Router();
 router.route("/chat-users").get(verifyToken,getUsersForSidebar);
 router.route("/:userId/messages").get(verifyToken,getMessages);
-router.route("/:userId/send-message").post(verifyToken,upload.fields([{name:'image',maxCount:10}]),sendMessage);
+router.route("/:userId/send-message").post(verifyToken,sendMessage);
 
 
 export {router as messageRouter}
